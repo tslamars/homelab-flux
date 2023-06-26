@@ -323,7 +323,9 @@ spec:
 Note that with `dependsOn` we tell Flux to first install or upgrade the controllers and only then the configs.
 This ensures that the Kubernetes CRDs are registered on the cluster, before Flux applies any custom resources.
 
-## Bootstrap dev-1, staging and production
+## Clusters 
+
+Bootstrap dev-1, staging and production clusters.
 
 The clusters dir contains the Flux configuration:
 
