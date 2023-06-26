@@ -669,7 +669,7 @@ This repository contains the following GitHub CI workflows:
 * the [e2e](./.github/workflows/e2e.yaml) workflow starts a Kubernetes cluster in CI and tests the staging setup by running Flux in Kubernetes Kind
 
  
-References:
+## References:
 - https://fluxcd.io/flux/get-started/
 - https://fluxcd.io/flux/guides/mozilla-sops/
 - https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/
