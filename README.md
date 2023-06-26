@@ -2,7 +2,7 @@
 
 GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup
 
-For this example we assume a scenario with three clusters: dev-1, staging and production.
+For this example homelab we assume a scenario with three clusters: dev-1, staging and production.
 The end goal is to leverage Flux and Kustomize to manage all clusters while minimizing duplicated declarations.
 
 We will configure Flux to install, test and upgrade a demo app using
@@ -15,7 +15,9 @@ upgrade the Helm releases to their latest chart version based on semver ranges.
 - [Docker](https://docs.docker.com/engine/install/ubuntu/)
 - [Go Task](https://taskfile.dev/installation)
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
-- [k3d](https://k3d.io/#installation) 
+- [k3d](https://k3d.io/#installation)
+- [flux](https://fluxcd.io/flux/installation/)
+- [Weave GitOps CLI](https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/)
 
 ```
 ### Go Task installation (Go Task as a more modern iteration of the Makefile utility)
