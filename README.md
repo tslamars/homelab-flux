@@ -667,3 +667,9 @@ This repository contains the following GitHub CI workflows:
 
 * the [test](./.github/workflows/test.yaml) workflow validates the Kubernetes manifests and Kustomize overlays with [kubeconform](https://github.com/yannh/kubeconform)
 * the [e2e](./.github/workflows/e2e.yaml) workflow starts a Kubernetes cluster in CI and tests the staging setup by running Flux in Kubernetes Kind
+
+ 
+References:
+- https://fluxcd.io/flux/get-started/
+- https://fluxcd.io/flux/guides/mozilla-sops/
+- https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/
