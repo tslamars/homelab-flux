@@ -46,6 +46,10 @@ Or install the CLI by downloading precompiled binaries using a Bash script:
 curl -s https://fluxcd.io/install.sh | sudo bash
 ```
 
+<!-- USAGE -->
+## :keyboard: Usage
+> **NB.** The K3s cluster is using Calico instead of Flannel in order to be able to use Network Policies.
+
 Fork your own copy of this repository to your GitHub account and create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) and export the following variables:
 ```sh
 export GITHUB_TOKEN=<YOUR_PERSONAL_ACCESS_TOKEN>
@@ -53,9 +57,6 @@ export GITHUB_USER=<YOUR_GITHUB_USERNAME>
 export GITHUB_REPO=<YOUR_FORKED_GITHUB_REPO_NAME>
 ```
 
-<!-- USAGE -->
-## :keyboard: Usage
-> **NB.** The K3s cluster is using Calico instead of Flannel in order to be able to use Network Policies.
 
 ### Local K3s dev-1 cluster
 Create the cluster:
