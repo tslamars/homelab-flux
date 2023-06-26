@@ -56,6 +56,7 @@ The Git repository contains the following top directories:
 │   ├── configs
 │   └── controllers
 └── clusters
+    ├── dev-1
     ├── production
     └── staging
 ```
