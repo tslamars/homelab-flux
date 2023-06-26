@@ -2,10 +2,6 @@
 
 GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup
 
-[![test](https://github.com/fluxcd/homelab-flux/workflows/test/badge.svg)](https://github.com/fluxcd/homelab-flux/actions)
-[![e2e](https://github.com/fluxcd/homelab-flux/workflows/e2e/badge.svg)](https://github.com/fluxcd/homelab-flux/actions)
-[![license](https://img.shields.io/github/license/fluxcd/homelab-flux.svg)](https://github.com/fluxcd/homelab-flux/blob/main/LICENSE)
-
 For this example we assume a scenario with three clusters: dev-1, staging and production.
 The end goal is to leverage Flux and Kustomize to manage all clusters while minimizing duplicated declarations.
 
