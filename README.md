@@ -408,12 +408,13 @@ sudo mv /tmp/gitops /usr/local/bin
 gitops version
 PASSWORD="<A new password you create, removing the brackets and including the quotation marks>"
 PASSWORD="flux"
-
-gitops create dashboard ww-gitops \
+$ echo -n $PASSWORD | gitops get bcrypt-hash
+$2a$10$9/V8eA7uFM/boe7Gn.cwyOO9/ILoXKrZxFU03dBs558tohCD3wouW
+$ gitops create dashboard weave-gitops \
   --password=$PASSWORD \
   --export > ./infrastructure/controllers/weave-gitops-dashboard.yaml
-git add -A && git commit -m "Add Weave GitOps Dashboard"
-git push
+$ git add -A && git commit -m "Add Weave GitOps Dashboard"
+$ git push
 $ kubectl get pods -n flux-system
 NAME                                      READY   STATUS    RESTARTS   AGE
 helm-controller-c8466f78b-v7zdh           1/1     Running   0          125m
@@ -448,7 +449,9 @@ spec:
             name: weave-gitops
             port:
               number: 9001
+
 $ kubectl apply -f ingress-weave-gitops.yaml -n flux-system
+
 $  kubectl get ing -n flux-system
 NAME                   CLASS   HOSTS                        ADDRESS                            PORTS   AGE
 weave-gitops-ingress   nginx   gitops.192.168.1.99.nip.io   172.27.0.2,172.27.0.3,172.27.0.4   80      70m
