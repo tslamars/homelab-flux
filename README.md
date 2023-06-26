@@ -365,7 +365,7 @@ spec:
 Note that with `path: ./apps/staging` we configure Flux to sync the staging Kustomize overlay and 
 with `dependsOn` we tell Flux to create the infrastructure items before deploying the apps.
 
-## Manual USAGE: not using Go Task file and k3d cluster & local k8s content
+## MANUAL USAGE: not using Go Task file and k3d cluster & local k8s content
 Fork this repository on your personal GitHub account and export your GitHub access token, username and repo name:
 
 ```sh
@@ -590,7 +590,7 @@ cp clusters/staging/apps.yaml clusters/dev-2
 ```
 
 You could create a dev overlay inside `apps`, make sure
-to change the `spec.path` inside `clusters/dev-2/apps.yaml` to `path: ./apps/dev-2`. Fix also Kustomize for apps. 
+to change the `spec.path` inside `clusters/dev-2/apps.yaml` to `path: ./apps/dev-2`. Fix also apps folder for new cluster (kustomize, etc.). 
 
 Push the changes to the main branch:
 
