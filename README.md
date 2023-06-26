@@ -1,4 +1,4 @@
-# flux2-kustomize-helm-example
+# GitOps: flux2 + kustomize + helm (DEMO)
 
 [![test](https://github.com/fluxcd/flux2-kustomize-helm-example/workflows/test/badge.svg)](https://github.com/fluxcd/flux2-kustomize-helm-example/actions)
 [![e2e](https://github.com/fluxcd/flux2-kustomize-helm-example/workflows/e2e/badge.svg)](https://github.com/fluxcd/flux2-kustomize-helm-example/actions)
@@ -12,6 +12,17 @@ We will configure Flux to install, test and upgrade a demo app using
 Flux will monitor the Helm repository, and it will automatically
 upgrade the Helm releases to their latest chart version based on semver ranges.
 
+### Dependencies
+
+- [Docker](https://docs.docker.com/engine/install/ubuntu/)
+- [Go Task](https://taskfile.dev/installation)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+- [k3d](https://k3d.io/#installation) 
+
+```
+### Go Task installation (Go Task as a more modern iteration of the Makefile utility)
+$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
+```
 
 ## Prerequisites
 
@@ -453,6 +464,8 @@ kubectl -n flux-system port-forward svc/weave-gitops 9001:9001
 ```
 Navigate to http://localhost:9001 and login using the username `admin` and the password `flux`.
 
+Or Browser (via nginx ingress): 
+- Flux UI: http://gitops.192.168.1.99.nip.io:8888 (admin/flux)
 
 [Weave GitOps](https://docs.gitops.weave.works/) provides insights into your application deployments,
 and makes continuous delivery with Flux easier to adopt and scale across your teams.
