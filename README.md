@@ -27,7 +27,7 @@ $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/
 ## Prerequisites
 
 You will need a Kubernetes cluster version 1.21 or newer.
-For a quick local test, you can use [Kubernetes kind](https://kind.sigs.k8s.io/docs/user/quick-start/).
+For a quick local test, you can use [k3d](https://k3d.io/#installation).
 Any other Kubernetes setup will work as well though.
 
 In order to follow the guide you'll need a GitHub account and a
@@ -46,6 +46,55 @@ Or install the CLI by downloading precompiled binaries using a Bash script:
 curl -s https://fluxcd.io/install.sh | sudo bash
 ```
 
+Fork your own copy of this repository to your GitHub account and create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) and export the following variables:
+```sh
+export GITHUB_TOKEN=<YOUR_PERSONAL_ACCESS_TOKEN>
+export GITHUB_USER=<YOUR_GITHUB_USERNAME>
+export GITHUB_REPO=<YOUR_FORKED_GITHUB_REPO_NAME>
+```
+
+<!-- USAGE -->
+## :keyboard: Usage
+> **NB.** The K3s cluster is using Calico instead of Flannel in order to be able to use Network Policies.
+
+### Local K3s dev-1 cluster
+Create the cluster:
+
+```sh
+task k8s:create-dev1-cluster
+```
+
+Verify that Calico controller deployment is ready:
+```sh
+task k8s:verify-calico
+```
+
+Verify that k3s cluster-1 satisfies flux2 prerequisites:
+```sh
+task flux:check-prerequisites
+```
+
+Install Flux and configure it to manage itself from a Git repository:
+```sh
+task flux:bootstrap-dev1-cluster
+```
+
+Flux2 is configured to deploy content of the `infrastructure` items using Helm before the application. Verify that the infrastructure Helm releases are synchronized to the cluster:
+```sh
+task flux:get-helmreleases
+```
+
+Verify that the api and client applications are synchronized to the cluster:
+```sh
+task flux:get-kustomizations
+```
+
+You can also check Helm and Git repositories and their status:
+```sh
+task flux:get-helmrepositories
+task flux:get-gitrepositories
+```
+
 ## Repository structure
 
 The Git repository contains the following top directories:
@@ -57,6 +106,7 @@ The Git repository contains the following top directories:
 ```
 ├── apps
 │   ├── base
+│   ├── dev-1
 │   ├── production 
 │   └── staging
 ├── infrastructure
@@ -73,6 +123,7 @@ The Git repository contains the following top directories:
 The apps configuration is structured into:
 
 - **apps/base/** dir contains namespaces and Helm release definitions
+- **apps/dev-1/** dir contains the dev-1 Helm release values
 - **apps/production/** dir contains the production Helm release values
 - **apps/staging/** dir contains the staging values
 
@@ -311,6 +362,7 @@ spec:
 Note that with `path: ./apps/staging` we configure Flux to sync the staging Kustomize overlay and 
 with `dependsOn` we tell Flux to create the infrastructure items before deploying the apps.
 
+### Manual: not using Go Task file and k3d local 
 Fork this repository on your personal GitHub account and export your GitHub access token, username and repo name:
 
 ```sh
@@ -334,7 +386,7 @@ flux bootstrap github \
     --repository=${GITHUB_REPO} \
     --branch=main \
     --personal \
-    --path=clusters/staging
+    --path=clusters/dev-1
 ```
 
 The bootstrap command commits the manifests for the Flux components in `clusters/staging/flux-system` dir
@@ -398,14 +450,16 @@ to visualise and monitor the workloads managed by Flux.
 
 Install Weave GitOps Open Source on Your Cluster
 
-Install the gitops CLI
+#### Install the gitops CLI
 Weave GitOps includes a command-line interface to help users create and manage resources. The gitops CLI is currently supported on Mac (x86 and Arm) and Linux, including Windows Subsystem for Linux (WSL). Windows support is a planned enhancement.
 
-There are multiple ways to install the gitops CLI:
 ```
 curl --silent --location "https://github.com/weaveworks/weave-gitops/releases/download/v0.26.0/gitops-$(uname)-$(uname -m).tar.gz" | tar xz -C /tmp
 sudo mv /tmp/gitops /usr/local/bin
 gitops version
+```
+### Deploy Weave GitOps
+```
 PASSWORD="<A new password you create, removing the brackets and including the quotation marks>"
 PASSWORD="flux"
 $ echo -n $PASSWORD | gitops get bcrypt-hash
@@ -415,6 +469,9 @@ $ gitops create dashboard weave-gitops \
   --export > ./infrastructure/controllers/weave-gitops-dashboard.yaml
 $ git add -A && git commit -m "Add Weave GitOps Dashboard"
 $ git push
+```
+#### Validate that Weave GitOps
+```
 $ kubectl get pods -n flux-system
 NAME                                      READY   STATUS    RESTARTS   AGE
 helm-controller-c8466f78b-v7zdh           1/1     Running   0          125m
@@ -429,7 +486,9 @@ notification-controller   ClusterIP   10.43.227.18   <none>        80/TCP     15
 source-controller         ClusterIP   10.43.83.89    <none>        80/TCP     152m
 webhook-receiver          ClusterIP   10.43.72.157   <none>        80/TCP     152m
 weave-gitops              ClusterIP   10.43.47.189   <none>        9001/TCP   151m
-
+```
+#### Create ingress
+```
 $ cat ingress-weave-gitops.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -456,7 +515,6 @@ $  kubectl get ing -n flux-system
 NAME                   CLASS   HOSTS                        ADDRESS                            PORTS   AGE
 weave-gitops-ingress   nginx   gitops.192.168.1.99.nip.io   172.27.0.2,172.27.0.3,172.27.0.4   80      70m
 
-
 ```
 ### Access the Flux UI
 
@@ -478,6 +536,10 @@ they can easily discover the relationship between Flux objects and navigate to d
 ![flux-ui-depends-on](.github/screens/flux-ui-depends-on.png)
 
 You can change the admin password bcrypt hash in **infrastructure/controllers/weave-gitops-dashboard.yaml**:
+```
+$ echo -n $PASSWORD | gitops get bcrypt-hash
+$2a$10$9/V8eA7uFM/boe7Gn.cwyOO9/ILoXKrZxFU03dBs558tohCD3wouW
+```
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -492,7 +554,7 @@ spec:
       create: true
       username: admin
       # bcrypt hash for password "flux"
-      passwordHash: "$2a$10$P/tHQ1DNFXdvX0zRGA8LPeSOyb0JXq9rP3fZ4W8HGTpLV7qHDlWhe"
+      passwordHash: "$2a$10$9/V8eA7uFM/boe7Gn.cwyOO9/ILoXKrZxFU03dBs558tohCD3wouW"
 ```
 
 To generate a bcrypt hash please see Weave GitOps
@@ -514,23 +576,23 @@ cd ${GITHUB_REPO}
 Create a dir inside `clusters` with your cluster name:
 
 ```sh
-mkdir -p clusters/dev
+mkdir -p clusters/dev-2
 ```
 
 Copy the sync manifests from staging:
 
 ```sh
-cp clusters/staging/infrastructure.yaml clusters/dev
-cp clusters/staging/apps.yaml clusters/dev
+cp clusters/staging/infrastructure.yaml clusters/dev-2
+cp clusters/staging/apps.yaml clusters/dev-2
 ```
 
 You could create a dev overlay inside `apps`, make sure
-to change the `spec.path` inside `clusters/dev/apps.yaml` to `path: ./apps/dev`. 
+to change the `spec.path` inside `clusters/dev-2/apps.yaml` to `path: ./apps/dev-2`. 
 
 Push the changes to the main branch:
 
 ```sh
-git add -A && git commit -m "add dev cluster" && git push
+git add -A && git commit -m "add dev-2 cluster" && git push
 ```
 
 Set the kubectl context and path to your dev cluster and bootstrap Flux:
@@ -542,7 +604,7 @@ flux bootstrap github \
     --repository=${GITHUB_REPO} \
     --branch=main \
     --personal \
-    --path=clusters/dev
+    --path=clusters/dev-2
 ```
 
 ## Identical environments
