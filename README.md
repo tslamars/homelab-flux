@@ -24,7 +24,7 @@ upgrade the Helm releases to their latest chart version based on semver ranges.
 $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 ```
 
-## Prerequisites
+### Prerequisites
 
 You will need a Kubernetes cluster version 1.21 or newer.
 For a quick local test, you can use [k3d](https://k3d.io/#installation).
@@ -47,7 +47,7 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 ```
 
 <!-- USAGE -->
-## :keyboard: Usage
+## Usage
 > **NB.** The K3s cluster is using Calico instead of Flannel in order to be able to use Network Policies.
 
 Fork your own copy of this repository to your GitHub account and create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) and export the following variables:
@@ -323,7 +323,7 @@ spec:
 Note that with `dependsOn` we tell Flux to first install or upgrade the controllers and only then the configs.
 This ensures that the Kubernetes CRDs are registered on the cluster, before Flux applies any custom resources.
 
-## Clusters 
+### Clusters 
 
 Bootstrap dev-1, staging and production clusters.
 
@@ -365,7 +365,7 @@ spec:
 Note that with `path: ./apps/staging` we configure Flux to sync the staging Kustomize overlay and 
 with `dependsOn` we tell Flux to create the infrastructure items before deploying the apps.
 
-### Manual USAGE: not using Go Task file and k3d local content
+## Manual USAGE: not using Go Task file and k3d cluster & local k8s content
 Fork this repository on your personal GitHub account and export your GitHub access token, username and repo name:
 
 ```sh
@@ -444,7 +444,7 @@ infra-controllers	main/696182e	False    	True 	Applied revision: main/696182e
 ```
 
 
-### Install the gitops CLI
+## Weave GitOps (OPTIONAL)
 
 On each cluster, we'll install [Weave GitOps](https://docs.gitops.weave.works/) (an OSS UI for Flux)
 to visualise and monitor the workloads managed by Flux.
@@ -453,7 +453,7 @@ to visualise and monitor the workloads managed by Flux.
 
 Install Weave GitOps Open Source on Your Cluster
 
-#### Install the gitops CLI
+### Install the gitops CLI
 Weave GitOps includes a command-line interface to help users create and manage resources. The gitops CLI is currently supported on Mac (x86 and Arm) and Linux, including Windows Subsystem for Linux (WSL). Windows support is a planned enhancement.
 
 ```
@@ -461,7 +461,7 @@ curl --silent --location "https://github.com/weaveworks/weave-gitops/releases/do
 sudo mv /tmp/gitops /usr/local/bin
 gitops version
 ```
-#### Deploy Weave GitOps
+### Deploy Weave GitOps
 ```
 PASSWORD="<A new password you create, removing the brackets and including the quotation marks>"
 PASSWORD="flux"
@@ -473,7 +473,7 @@ $ gitops create dashboard weave-gitops \
 $ git add -A && git commit -m "Add Weave GitOps Dashboard"
 $ git push
 ```
-#### Validate that Weave GitOps
+### Validate that Weave GitOps
 ```
 $ kubectl get pods -n flux-system
 NAME                                      READY   STATUS    RESTARTS   AGE
@@ -490,7 +490,7 @@ source-controller         ClusterIP   10.43.83.89    <none>        80/TCP     15
 webhook-receiver          ClusterIP   10.43.72.157   <none>        80/TCP     152m
 weave-gitops              ClusterIP   10.43.47.189   <none>        9001/TCP   151m
 ```
-#### Create ingress
+### Create ingress
 ```
 $ cat ingress-weave-gitops.yaml
 apiVersion: networking.k8s.io/v1
@@ -519,7 +519,7 @@ NAME                   CLASS   HOSTS                        ADDRESS             
 weave-gitops-ingress   nginx   gitops.192.168.1.99.nip.io   172.27.0.2,172.27.0.3,172.27.0.4   80      70m
 
 ```
-### Access the Flux UI
+### Access the Flux UI (Weave GitOps)
 
 To access the Flux UI on a cluster, first start port forwarding with:
 
@@ -590,7 +590,7 @@ cp clusters/staging/apps.yaml clusters/dev-2
 ```
 
 You could create a dev overlay inside `apps`, make sure
-to change the `spec.path` inside `clusters/dev-2/apps.yaml` to `path: ./apps/dev-2`. Fix also Kustomiza for apps. 
+to change the `spec.path` inside `clusters/dev-2/apps.yaml` to `path: ./apps/dev-2`. Fix also Kustomize for apps. 
 
 Push the changes to the main branch:
 
