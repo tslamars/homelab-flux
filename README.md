@@ -1,6 +1,6 @@
 ## GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup (flux2 + kustomize + helm)
 
-GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup
+### Objective: GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup
 
 For this example homelab we assume a scenario with three clusters: dev-1, staging and production.
 The end goal is to leverage Flux and Kustomize to manage all clusters while minimizing duplicated declarations.
@@ -20,7 +20,7 @@ upgrade the Helm releases to their latest chart version based on semver ranges.
 - [Weave GitOps CLI](https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/)
 
 ```
-### Go Task installation (Go Task as a more modern iteration of the Makefile utility)
+### Go Task installation (Note: Go Task as a more modern iteration of the Makefile utility)
 $ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 ```
 
@@ -34,7 +34,7 @@ In order to follow the guide you'll need a GitHub account and a
 [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 that can create repositories (check all permissions under `repo`).
 
-Install the Flux CLI on MacOS or Linux using Homebrew:
+Install the Flux CLI on MacOS or Linux:
 
 ```sh
 brew install fluxcd/tap/flux
@@ -51,12 +51,12 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 > **NB.** The K3s cluster is using Calico instead of Flannel in order to be able to use Network Policies.
 
 Fork your own copy of this repository to your GitHub account and create a [personal access token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) and export the following variables:
+
 ```sh
 export GITHUB_TOKEN=<YOUR_PERSONAL_ACCESS_TOKEN>
 export GITHUB_USER=<YOUR_GITHUB_USERNAME>
 export GITHUB_REPO=<YOUR_FORKED_GITHUB_REPO_NAME>
 ```
-
 
 ### Local K3s dev-1 cluster
 Create the cluster:
@@ -126,7 +126,7 @@ The apps configuration is structured into:
 - **apps/base/** dir contains namespaces and Helm release definitions
 - **apps/dev-1/** dir contains the dev-1 Helm release values
 - **apps/production/** dir contains the production Helm release values
-- **apps/staging/** dir contains the staging values
+- **apps/staging/** dir contains the staging Helm release values
 
 ```
 ./apps/
@@ -147,7 +147,7 @@ The apps configuration is structured into:
     └── podinfo-patch.yaml
 ```
 
-In **apps/base/podinfo/** dir we have a Flux `HelmRelease` with common values for both clusters:
+In **apps/base/podinfo/** dir we have a Flux `HelmRelease` with common values for three(all) clusters:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -171,7 +171,7 @@ spec:
       className: nginx
 ```
 
-In **apps/dev-1/** dir we have a Kustomize patch with the production specific values:
+In **apps/dev-1/** dir we have a Kustomize patch with the dev-1 specific values:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
@@ -363,7 +363,7 @@ spec:
 Note that with `path: ./apps/staging` we configure Flux to sync the staging Kustomize overlay and 
 with `dependsOn` we tell Flux to create the infrastructure items before deploying the apps.
 
-### Manual: not using Go Task file and k3d local 
+### Manual USAGE: not using Go Task file and k3d local content
 Fork this repository on your personal GitHub account and export your GitHub access token, username and repo name:
 
 ```sh
@@ -459,7 +459,7 @@ curl --silent --location "https://github.com/weaveworks/weave-gitops/releases/do
 sudo mv /tmp/gitops /usr/local/bin
 gitops version
 ```
-### Deploy Weave GitOps
+#### Deploy Weave GitOps
 ```
 PASSWORD="<A new password you create, removing the brackets and including the quotation marks>"
 PASSWORD="flux"
@@ -588,7 +588,7 @@ cp clusters/staging/apps.yaml clusters/dev-2
 ```
 
 You could create a dev overlay inside `apps`, make sure
-to change the `spec.path` inside `clusters/dev-2/apps.yaml` to `path: ./apps/dev-2`. 
+to change the `spec.path` inside `clusters/dev-2/apps.yaml` to `path: ./apps/dev-2`. Fix also Kustomiza for apps. 
 
 Push the changes to the main branch:
 
