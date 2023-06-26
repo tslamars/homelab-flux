@@ -77,6 +77,9 @@ The apps configuration is structured into:
 │       ├── namespace.yaml
 │       ├── release.yaml
 │       └── repository.yaml
+├── dev-1
+│   ├── kustomization.yaml
+│   └── podinfo-patch.yaml
 ├── production
 │   ├── kustomization.yaml
 │   └── podinfo-patch.yaml
@@ -107,6 +110,24 @@ spec:
     ingress:
       enabled: true
       className: nginx
+```
+
+In **apps/dev-1/** dir we have a Kustomize patch with the production specific values:
+
+```yaml
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: podinfo
+  namespace: podinfo
+spec:
+  chart:
+    spec:
+      version: ">=1.0.0"
+  values:
+    ingress:
+      hosts:
+        - host: podinfo.production
 ```
 
 In **apps/staging/** dir we have a Kustomize patch with the staging specific values:
@@ -243,12 +264,15 @@ spec:
 Note that with `dependsOn` we tell Flux to first install or upgrade the controllers and only then the configs.
 This ensures that the Kubernetes CRDs are registered on the cluster, before Flux applies any custom resources.
 
-## Bootstrap staging and production
+## Bootstrap dev-1, staging and production
 
 The clusters dir contains the Flux configuration:
 
 ```
 ./clusters/
+├── dev-1
+│   ├── apps.yaml
+│   └── infrastructure.yaml
 ├── production
 │   ├── apps.yaml
 │   └── infrastructure.yaml
