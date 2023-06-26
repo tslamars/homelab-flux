@@ -410,6 +410,39 @@ source-controller-557989894-hjmj2         1/1     Running   0          125m
 notification-controller-55d78c78c-bmqmc   1/1     Running   0          125m
 kustomize-controller-666f8f4b5f-tkfm4     1/1     Running   0          125m
 weave-gitops-58f8bbb47b-985wv             1/1     Running   0          124m
+
+$  kubectl get svc -n flux-system
+NAME                      TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+notification-controller   ClusterIP   10.43.227.18   <none>        80/TCP     152m
+source-controller         ClusterIP   10.43.83.89    <none>        80/TCP     152m
+webhook-receiver          ClusterIP   10.43.72.157   <none>        80/TCP     152m
+weave-gitops              ClusterIP   10.43.47.189   <none>        9001/TCP   151m
+
+$ cat ingress-weave-gitops.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: weave-gitops-ingress
+  namespace: flux-system
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "gitops.192.168.1.99.nip.io"
+    http:
+      paths:
+      - path: "/"
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: weave-gitops
+            port:
+              number: 9001
+$ kubectl apply -f ingress-weave-gitops.yaml -n flux-system
+$  kubectl get ing -n flux-system
+NAME                   CLASS   HOSTS                        ADDRESS                            PORTS   AGE
+weave-gitops-ingress   nginx   gitops.192.168.1.99.nip.io   172.27.0.2,172.27.0.3,172.27.0.4   80      70m
+
+
 ```
 ### Access the Flux UI
 
