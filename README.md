@@ -4,18 +4,14 @@
 [![e2e](https://github.com/fluxcd/flux2-kustomize-helm-example/workflows/e2e/badge.svg)](https://github.com/fluxcd/flux2-kustomize-helm-example/actions)
 [![license](https://img.shields.io/github/license/fluxcd/flux2-kustomize-helm-example.svg)](https://github.com/fluxcd/flux2-kustomize-helm-example/blob/main/LICENSE)
 
-For this example we assume a scenario with two clusters: staging and production.
-The end goal is to leverage Flux and Kustomize to manage both clusters while minimizing duplicated declarations.
+For this example we assume a scenario with three clusters: dev-1, staging and production.
+The end goal is to leverage Flux and Kustomize to manage all clusters while minimizing duplicated declarations.
 
 We will configure Flux to install, test and upgrade a demo app using
 `HelmRepository` and `HelmRelease` custom resources.
 Flux will monitor the Helm repository, and it will automatically
 upgrade the Helm releases to their latest chart version based on semver ranges.
 
-![flux-ui-apps.png](.github/screens/flux-ui-apps.png)
-
-On each cluster, we'll install [Weave GitOps](https://docs.gitops.weave.works/) (an OSS UI for Flux)
-to visualise and monitor the workloads managed by Flux.
 
 ## Prerequisites
 
@@ -189,7 +185,7 @@ The infrastructure is structured into:
 └── controllers
     ├── cert-manager.yaml
     ├── ingress-nginx.yaml
-    ├── weave-gitops.yaml
+    ├── weave-gitops-dashboard.yaml
     └── kustomization.yaml
 ```
 
@@ -381,6 +377,40 @@ infra-configs    	main/696182e	False    	True 	Applied revision: main/696182e
 infra-controllers	main/696182e	False    	True 	Applied revision: main/696182e	
 ```
 
+
+### Install the gitops CLI
+
+On each cluster, we'll install [Weave GitOps](https://docs.gitops.weave.works/) (an OSS UI for Flux)
+to visualise and monitor the workloads managed by Flux.
+
+![flux-ui-apps.png](.github/screens/flux-ui-apps.png)
+
+Install Weave GitOps Open Source on Your Cluster
+
+Install the gitops CLI
+Weave GitOps includes a command-line interface to help users create and manage resources. The gitops CLI is currently supported on Mac (x86 and Arm) and Linux, including Windows Subsystem for Linux (WSL). Windows support is a planned enhancement.
+
+There are multiple ways to install the gitops CLI:
+```
+curl --silent --location "https://github.com/weaveworks/weave-gitops/releases/download/v0.26.0/gitops-$(uname)-$(uname -m).tar.gz" | tar xz -C /tmp
+sudo mv /tmp/gitops /usr/local/bin
+gitops version
+PASSWORD="<A new password you create, removing the brackets and including the quotation marks>"
+PASSWORD="flux"
+
+gitops create dashboard ww-gitops \
+  --password=$PASSWORD \
+  --export > ./infrastructure/controllers/weave-gitops-dashboard.yaml
+git add -A && git commit -m "Add Weave GitOps Dashboard"
+git push
+$ kubectl get pods -n flux-system
+NAME                                      READY   STATUS    RESTARTS   AGE
+helm-controller-c8466f78b-v7zdh           1/1     Running   0          125m
+source-controller-557989894-hjmj2         1/1     Running   0          125m
+notification-controller-55d78c78c-bmqmc   1/1     Running   0          125m
+kustomize-controller-666f8f4b5f-tkfm4     1/1     Running   0          125m
+weave-gitops-58f8bbb47b-985wv             1/1     Running   0          124m
+```
 ### Access the Flux UI
 
 To access the Flux UI on a cluster, first start port forwarding with:
@@ -388,8 +418,8 @@ To access the Flux UI on a cluster, first start port forwarding with:
 ```sh
 kubectl -n flux-system port-forward svc/weave-gitops 9001:9001
 ```
-
 Navigate to http://localhost:9001 and login using the username `admin` and the password `flux`.
+
 
 [Weave GitOps](https://docs.gitops.weave.works/) provides insights into your application deployments,
 and makes continuous delivery with Flux easier to adopt and scale across your teams.
@@ -398,7 +428,7 @@ they can easily discover the relationship between Flux objects and navigate to d
 
 ![flux-ui-depends-on](.github/screens/flux-ui-depends-on.png)
 
-You can change the admin password bcrypt hash in **infrastructure/controllers/weave-gitops.yaml**:
+You can change the admin password bcrypt hash in **infrastructure/controllers/weave-gitops-dashboard.yaml**:
 
 ```yaml
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
