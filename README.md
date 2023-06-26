@@ -1,4 +1,4 @@
-## GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup (flux2 + kustomize + helm (DEMO)
+## GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup (flux2 + kustomize + helm)
 
 GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup
 
