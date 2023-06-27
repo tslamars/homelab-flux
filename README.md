@@ -1,5 +1,9 @@
 ## GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup (flux2 + kustomize + helm)
 
+[![test](https://github.com/adavarski/homelab-flux/workflows/test/badge.svg)](https://github.com/adavarski/homelab-flux/actions)
+[![e2e](https://github.com/adavarski/homelab-flux/workflows/e2e/badge.svg)](https://github.com/adavarski/homelab-flux/actions)
+
+
 ### Objective: GitOps Flux-based HomeLab: Fully automated Kubernetes and GitOps setup
 
 For this example homelab we assume a scenario with three clusters: dev-1, staging and production.
