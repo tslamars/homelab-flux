@@ -23,10 +23,6 @@ upgrade the Helm releases to their latest chart version based on semver ranges.
 - [flux](https://fluxcd.io/flux/installation/)
 - [Weave GitOps CLI](https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/)
 
-```
-### Go Task installation (Note: Go Task as a more modern iteration of the Makefile utility)
-$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
-```
 
 ### Prerequisites
 
@@ -48,6 +44,11 @@ Or install the CLI by downloading precompiled binaries using a Bash script:
 
 ```sh
 curl -s https://fluxcd.io/install.sh | sudo bash
+```
+Go Task installation (Note: Go Task as a more modern iteration of the Makefile utility):
+
+```sh
+$ sudo sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 ```
 
 <!-- USAGE -->
