@@ -683,3 +683,7 @@ This repository contains the following GitHub CI workflows:
 - https://github.com/fluxcd/flux2-multi-tenancy
 - https://github.com/fluxcd/flux2-kustomize-helm-example
 - https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/
+
+## TODO
+- Add HashiCorp Vault + k8s External (flux -> infrastructure) based on https://github.com/adavarski/k8s-vault-secrets#demo3-eso-external-secret-operato
+- Add SOPS 
