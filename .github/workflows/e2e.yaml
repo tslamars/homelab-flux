@@ -28,7 +28,7 @@ jobs:
           --ignore-paths="./clusters/**/flux-system/"
           flux create kustomization flux-system \
           --source=flux-system \
-          --path=./clusters/dev-1
+          --path=./clusters/staging
       - name: Verify cluster reconciliation
         run: |
           kubectl -n flux-system wait kustomization/infra-controllers --for=condition=ready --timeout=5m
