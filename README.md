@@ -680,5 +680,6 @@ This repository contains the following GitHub CI workflows:
 ## References:
 - https://fluxcd.io/flux/get-started/
 - https://fluxcd.io/flux/guides/mozilla-sops/
+- https://github.com/fluxcd/flux2-multi-tenancy
 - https://github.com/fluxcd/flux2-kustomize-helm-example
 - https://docs.gitops.weave.works/docs/open-source/getting-started/install-OSS/
